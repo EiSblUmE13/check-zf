@@ -1,0 +1,26 @@
+
+<?php
+$form->setData($client->toArray());
+
+if($client->getCountry())
+	$form->get('country')->setValue($client->getCountry()->getId());
+
+?>
+
+<div class="form-group">
+	<?=$this->formRow($form->get("name"))?>
+</div>
+
+<div class="form-group">
+	<?=$this->formRow($form->get("fullname"))?>
+</div>
+
+<div class="form-group">
+	<?=$this->formRow($form->get("description"))?>
+</div>
+
+<hr>
+
+<div class="form-group">
+	<?=$this->formRow($form->get("country"))?>
+</div>

@@ -1,0 +1,40 @@
+
+<?php
+$user = $this->identity();
+
+$template_name = getcwd().'/data/cache/'.$document->getId()."_{$this->lang}.tpl";
+if(!file_exists($template_name)) {
+	file_put_contents($template_name, $document->getLayout($lang));
+}
+$hasChildren=false;
+?>
+
+<?php if($document->hasChildren($this->dm)):
+$hasChildren=true;
+?>
+
+<?php endif; ?>
+
+<?php if($bgimage = $document->getBgimage()): ?>
+<script>
+
+backgrounds=[{'src':'/assetimage_<?=$bgimage?>_1200b1200.jpg','transition':'fade'}];
+overlay={src:'/vegas/dist/overlays/02.png',opacity:0.5};
+
+</script>
+<?php endif; ?>
+
+<?php if($document->getIsdocument() == 1): ?>
+<div id="document" class="document hp100">
+
+	<?php include $template_name;?>
+
+	<div class="clearfix"><!--  --></div>
+
+</div>
+<?php else: ?>
+<?php include $template_name;?>
+
+<div class="clearfix"><!--  --></div>
+
+<?php endif; ?>

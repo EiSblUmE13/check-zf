@@ -1,0 +1,74 @@
+<?php
+$sel = $this->dm->getRepository("Model\Image")->findBy(array('attributes.tag'=>'Backgrounds'));
+
+$images = $this->dm->createQueryBuilder("Model\Image")
+
+			->field('attributes.tag')->equals('Backgrounds')
+			->field('randompoint')->in(array(12))
+			->limit(4)
+			->getQuery()->execute();
+
+$array_class = array("randomrotateout",'fadeout','skewtoleftshort','skewtoleft','skewtorightshort','skewtoright',
+						'stb', 'stt', 'ltb', 'ltt', 'stl', 'str', 'ltl', 'ltr');
+$a_range = range(-200,800);
+$b_range = range(100,300);
+$c_range = range(0,12);
+$d_range = range(1000,5500);
+?>
+
+<div class="tp-banner-container margin-bottom-20">
+	<div class="tp-banner" >
+		<ul>
+			<!-- SLIDE  -->
+			<? foreach($images as $image): ?>
+			<li data-transition="fadefromleft" data-slotamount="7" data-masterspeed="1500" >
+				<img src="/assetimage_<?=$image->getId()?>_1000scs200.jpg"  alt="<?=$image->getAttributes()->getAlt($this->lang)?>"  data-bgfit="cover" data-bgposition="left top" data-bgrepeat="no-repeat">
+				<? $i=1; foreach($image->getAttributes()->getTag() as $hashtag): ?>
+				<div class="tp-caption hashtext flat_bg_grey <?=$array_class[array_rand($array_class)]?>"
+					data-x="<?=$a_range[array_rand($a_range)]?>"
+					data-y="<?=$b_range[array_rand($b_range)]?>"
+					data-class="animate<?=$c_range[array_rand($c_range)]?> flipInX"
+					data-speed="1000"
+					data-start="<?=$d_range[array_rand($d_range)]?>"
+					data-easing="Power4.easeInOut"
+					data-endeasing="Power4.easeOut"
+					> #<?=$hashtag?>
+				</div>
+				<? $i++; endforeach; ?>
+			</li>
+			<? endforeach; ?>
+			<!-- /SLIDE  -->
+
+		</ul>
+	</div>
+</div>
+
+<script>
+(function(){
+
+	revapi = jQuery('.tp-banner').revolution({
+		delay:9000,
+		startwidth:1170,
+		startheight:500,
+		hideThumbs:10,
+		fullWidth:"on",
+		forceFullWidth:"on"
+	});
+
+
+	revapi.bind("revolution.slide.onbeforeswap",function (e,data) {
+		$(e.target).find('tp-caption').each(function(){
+			$(this).addClass($(this).data('class'));
+		});
+		setTimeout(function() {
+		},200)
+	});
+	revapi.bind("revolution.slide.onafterswap",function (e,data) {
+		$(e.target).find('tp-caption').each(function(){
+			$(this).removeClass($(this).data('class'));
+		});
+		setTimeout(function() {
+		},200)
+	});
+})();
+</script>

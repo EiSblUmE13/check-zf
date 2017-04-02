@@ -1,0 +1,26 @@
+
+<?php
+$supportedLanguages = array_keys($config['locales']['list']);
+$inlanguage = $widget && $widget->getInlanguage() ? $widget->getInlanguage() : $supportedLanguages;
+?>
+<div class="form-group">
+
+	<label><?=$this->translate('Widget supported Languages')?>:</label><br>
+	<?php foreach($supportedLanguages as $supportedLang):
+	$checked = in_array($supportedLang, $inlanguage) ? ' checked="checked"' : false;
+	?>
+	<label class="margin-right-20">
+		<input type="checkbox" name="inlanguage" value="<?=$supportedLang?>"<?=$checked?> /> <?=$config['locales']['list'][$supportedLang]['name']?></label>
+	<?php endforeach; ?>
+
+</div>
+
+<hr>
+
+<?php
+$checked = isset($attributes['hassocialmedia']) && $attributes['hassocialmedia']==1 ? ' checked="checked"' : false;
+?>
+<div class="form-group">
+	<label class="block">
+		<input type="checkbox" name="hassocialmedia" value="1"<?=$checked?> /> <?=$this->translate('Has Socialmedia')?></label>
+</div>

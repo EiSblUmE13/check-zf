@@ -1,0 +1,261 @@
+
+<?php
+$action = $this->url('page', array('controller'=>'document','action'=>'set','id'=>$document->getId(),'lang'=>$this->lang), array('lang'=>$this->lang));
+$action = "/page/document/set/token/{$document->getToken()}?lang={$this->lang}";
+
+$this->documentform->prepare();
+?>
+
+
+<form id="documentForm" class="hp100" method="post" action="<?=$action?>">
+
+<?=$this->formRow($this->documentform->get('token'))?>
+
+
+	<ul class="nav nav-tabs">
+		<li class=""><a href="#basic" data-target="#basic" data-toggle="tab">Basic</a></li>
+		<li><a href="#seo" data-target="#seo" data-toggle="tab">SEO</a></li>
+		<!--
+		<li><a href="#map" data-target="#map" data-toggle="tab">Map</a></li>
+		-->
+		<li><a href="#template" data-target="#template" data-toggle="tab">Template</a></li>
+		<!--
+		<li><a href="#publish" data-target="#publish" data-toggle="tab"><?=$this->translate('Publishing')?></a></li>
+		-->
+	</ul>
+
+	<div class="tab-content mh736">
+
+		<p class="inverse margin-top-15 margin-bottom-20">Token: <?=$document->getToken()?> Name: <?=$document->getStructname($this->lang)?></p>
+
+		<div class="btn-group margin-bottom-20" data-toggle="buttons">
+			<?php foreach($config['locales']['list'] as $_lang => $entry):
+			$active = $_lang == $lang ? ' active' : false;
+			?>
+			<label class="btn btn-default<?=$active?>">
+				<input class="check_lang" type="radio" name="check_lang" value="<?=$_lang?>" <?=$active?'checked':false?>> <?=strtoupper($_lang)?></label>
+			<?php endforeach; ?>
+		</div>
+
+		<p><!--  --></p>
+
+		<div class="tab-pane" id="basic">
+
+			<div class="form-group">
+				<label class="block"><i class="fa fa-info-circle fa-fw"
+					data-toggle="popover"
+					data-trigger="hover"
+					title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-original-title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-content="<?=$this->bbcode($this->translate('site_structur_popover_content'))?>"></i>
+					<?=$this->translate('Structname')?>:
+				<?=$this->formRow($this->documentform->get('structname'))?></label>
+			</div>
+
+			<div class="form-group">
+				<label class="block"><i class="fa fa-info-circle fa-fw"
+					data-toggle="popover"
+					data-trigger="hover"
+					title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-original-title="<?php echo $this->bbcode($this->translate('Help')); ?>"
+					data-content="<?=$this->bbcode($this->translate('site_url_popover_content'))?>"></i>
+					<?=$this->translate('Path')?>:
+				<?=$this->formRow($this->documentform->get('path'))?></label>
+			</div>
+
+			<div class="form-group">
+				<label class="block"><i class="fa fa-info-circle fa-fw"
+					data-toggle="popover"
+					data-trigger="hover"
+					title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-original-title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-content="<?=$this->bbcode($this->translate('site_position_popover_content'))?>"></i>
+					<?=$this->translate('Position')?>:
+				<?=$this->formRow($this->documentform->get('sort'))?></label>
+			</div>
+
+			<div class="form-group">
+				<label class="inline-block wp49"><i class="fa fa-info-circle fa-fw"
+					data-toggle="popover"
+					data-trigger="hover"
+					title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-original-title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-content="<?=$this->bbcode($this->translate('site_position_popover_publishedOn'))?>"></i>
+					<?=$this->translate('Published Start')?>:
+				<?=$this->formRow($this->documentform->get('publishedOn'))?></label>
+
+				<label class="inline-block wp49"><i class="fa fa-info-circle fa-fw"
+					data-toggle="popover"
+					data-trigger="hover"
+					title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-original-title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-content="<?=$this->bbcode($this->translate('site_position_popover_publishedOff'))?>"></i>
+					<?=$this->translate('Published End')?>:
+				<?=$this->formRow($this->documentform->get('publishedOff'))?></label>
+			</div>
+
+			<div class="form-group">
+				<label class="block"><i class="fa fa-info-circle fa-fw"
+					data-toggle="popover"
+					data-trigger="hover"
+					title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-original-title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-content="<?=$this->bbcode($this->translate('site_visible_popover_content'))?>"></i>
+					<?=$this->translate('Visible')?>:
+				<?=$this->formRow($this->documentform->get('visible'))?></label>
+			</div>
+
+			<div class="form-group">
+				<label class="block"><i class="fa fa-info-circle fa-fw"
+					data-toggle="popover"
+					data-trigger="hover"
+					title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-original-title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-content="<?=$this->bbcode($this->translate('site_icon_popover_content'))?>"></i>
+					<?=$this->translate('Struct Icon')?>:
+				<?=$this->formRow($this->documentform->get('structicon'))?></label>
+			</div>
+
+			<div class="form-group">
+				<label class="block"><i class="fa fa-info-circle fa-fw"
+					data-toggle="popover"
+					data-trigger="hover"
+					title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-original-title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-content="<?=$this->bbcode($this->translate('site_class_popover_content'))?>"></i>
+					<?=$this->translate('Documentclass')?>:
+				<?=$this->formRow($this->documentform->get('documentclass'))?></label>
+			</div>
+
+			<div class="form-group">
+				<label class="block"><i class="fa fa-info-circle fa-fw"
+					data-toggle="popover"
+					data-trigger="hover"
+					title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-original-title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-content="<?=$this->bbcode($this->translate('site_bgimage_popover_content'))?>"></i>
+					<?=$this->translate('Background Image')?>:
+				<?=$this->formRow($this->documentform->get('bgimage'))?></label>
+			</div>
+
+			<div class="form-group">
+				<?=$this->formRow($this->documentform->get('inlanguage'))?>
+			</div>
+
+			<div class="form-group">
+				<?php if($document->getBgimage()): ?>
+				<img class="pull-left thumbnail" src="/assetimage_<?=$document->getBgimage()?>_100h100.jpg" height="100" />
+				<?php endif; ?>
+				<div class="clearfix"><!--  --></div>
+			</div>
+
+
+		</div>
+
+		<div class="tab-pane" id="seo">
+
+			<div class="form-group">
+				<label class="block"><?=$this->translate('Title')?>:
+				<?=$this->formRow($this->sheetform->get('title'))?></label>
+			</div>
+
+			<div class="form-group">
+				<label class="block"><?=$this->translate('Description')?>:
+				<?=$this->formRow($this->sheetform->get('description'))?></label>
+			</div>
+
+			<div class="form-group">
+				<label class="block"><?=$this->translate('Keywords')?>:
+				<?=$this->formRow($this->sheetform->get('keywords'))?></label>
+			</div>
+
+			<div class="form-group">
+				<label class="block"><?=$this->translate('Index Follow')?>:
+				<?=$this->formRow($this->sheetform->get('indexfollow'))?></label>
+			</div>
+
+			<hr>
+
+			<div class="form-group">
+				<label class="block"><?=$this->translate('Georeverse')?>:
+				<?=$this->formRow($this->documentform->get('georeverse'))?></label>
+			</div>
+
+		</div>
+
+		<div class="tab-pane" id="template">
+
+			<div class="form-group">
+				<label class="block"><?=$this->translate('Layout')?>:
+				<?=$this->formRow($this->documentform->get('layout'))?></label>
+			</div>
+
+			<label>
+				<input type="checkbox" name="cleantemplate" value="cleantemplate"> rebuild template</label>
+
+		</div>
+
+		<hr>
+
+		<div class="form-group">
+			<?=$this->formRow($this->documentform->get('submit'))?>
+		</div>
+
+		<div class="clearfix"><!--  --></div>
+
+	</div>
+
+	<div class="clearfix"><!--  --></div>
+
+</form>
+
+
+
+
+
+<script>
+(function(){
+
+	$('#bgImageInput').on('focus', function(){
+		$('#seekerLabel').html('Suchen Sie sich ein Bild aus');
+		$('#seekerContent').load('/page/images/seeker?t=bgImageInput');
+		showModal('#seeker');
+	});
+
+	var jqform_options = {
+			'selector': '#documentForm',
+			'callback': function(response) {
+				$('#documentForm .tab-pane.active').fadeTo(100);
+				if(response.document != undefined) {
+					$('#btn_' + response.document.id).empty().append(response.document.structname['<?=$this->lang?>']);
+					if(response.document.visible == 0) {
+						$('#btn_' + response.document.id).removeClass('btn-success').addClass('btn-warning');
+					}
+					else
+						$('#btn_' + response.document.id).removeClass('btn-warning').addClass('btn-success');
+					delete response.document;
+				}
+				MC.EventManager.notify('mc.jsonresponse', response);
+			}
+		}
+
+	$('#submitBtn').on("click", function(e) {
+		e.preventDefault();
+		$('#documentForm .tab-pane.active').fadeTo(20);
+		$(this).closest('form').submit();
+		return false;
+	});
+
+	$('#documentForm [data-toggle="tab"]').on('shown.bs.tab', function() {
+		$('form').unbind();
+		$.fn.eventManager.notify('mc.postDispatch', {out:{wysihtml5:true,tooltip:true,popover:true,scrollbar:false,jqform:false}});
+		$('#documentForm .tab-pane.active input:first ').select();
+		$.fn.eventManager.notify('mc.jqform', jqform_options);
+	});
+	$('#documentForm [data-toggle="tab"]:first').trigger('click');
+	$('#documentForm .tab-pane.active input:first ').select();
+	$('#documentForm [data-toggle="popover"]').popover({html:true});
+	$.fancybox.reposition();
+
+})();
+</script>

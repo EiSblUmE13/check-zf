@@ -1,0 +1,166 @@
+<?php echo $this->doctype(); ?>
+<?php
+$u = $this->identity();
+?>
+<html lang="<?=$this->lang?>">
+<head>
+		<meta charset="utf-8">
+		<?php echo $this->headTitle('Historic Highlights of Germany')->setSeparator(' | ')->setAutoEscape(false) ?>
+
+		<?php echo $this->headMeta()
+			->appendName('viewport', 'width=device-width, initial-scale=1.0')
+			->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+		?>
+
+		<!-- styles -->
+		<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+			->appendStylesheet('//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css')
+			->appendStylesheet($this->basePath() . '/css/bootstrap.min.css')
+			->appendStylesheet($this->basePath() . '/css/animate.delay.css')
+			->appendStylesheet($this->basePath() . '/css/animate.min.css')
+			->appendStylesheet($this->basePath() . '/css/wsihtml5.css')
+			->appendStylesheet($this->basePath() . '/css/wysihtm5.extends.css')
+			->appendStylesheet($this->basePath() . '/perfect-scrollbar/min/perfect-scrollbar.min.css')
+			->appendStylesheet($this->basePath() . '/fancybox/source/jquery.fancybox.css')
+			->appendStylesheet($this->basePath() . '/vegas/dist/vegas.min.css')
+			->appendStylesheet($this->basePath() . '/css/settings-ie8.css')
+			->appendStylesheet($this->basePath() . '/css/settings.css')
+			->appendStylesheet($this->basePath() . '/css/editor.css')
+			->appendStylesheet($this->basePath() . '/css/style.min.css')
+		?>
+
+		<!-- Scripts -->
+		<?php echo $this->headScript()
+			->appendFile($this->basePath() . '/js/modernizr.min.js')
+			->appendFile($this->basePath() . '/js/html5shiv.js',   'text/javascript', array('conditional' => 'lt IE 9',))
+			->appendFile($this->basePath() . '/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
+			->appendFile($this->basePath() . '/js/jquery.min.js')
+			->appendFile($this->basePath() . '/js/jquery-ui.min.js')
+			->appendFile($this->basePath() . '/js/bootstrap.min.js')
+			->appendFile($this->basePath() . '/js/simple.js')
+			->appendFile($this->basePath() . '/js/jquery-migrate.min.js')
+			->appendFile($this->basePath() . '/js/jquery.form.min.js')
+			->appendFile($this->basePath() . '/js/jquery.validationEngine.min.js')
+			->appendFile($this->basePath() . '/js/jquery.validationEngine-de.js')
+			->appendFile($this->basePath() . '/perfect-scrollbar/min/perfect-scrollbar.min.js')
+			->appendFile($this->basePath() . '/fancybox/source/jquery.fancybox.pack.js')
+			->appendFile($this->basePath() . '/js/blazy.min.js')
+			->appendFile($this->basePath() . '/js/jquery.themepunch.plugins.min.js')
+			->appendFile($this->basePath() . '/js/jquery.themepunch.revolution.js')
+			->appendFile($this->basePath() . '/vegas/dist/vegas.min.js')
+			->appendFile($this->basePath() . '/js/metacope.js')
+		;?>
+
+<script>
+$spinner = $('<i/>', {'class':'fa fa-refresh fa-spin fa-3x spinner','style':'position:absolute;top:20px;left:50%'});
+var backgrounds=false, overlay=false;
+</script>
+</head>
+<body>
+
+	<div class="holder">
+		<?=$this->partial('/partials/mainnavigation')?>
+		<div class="content-holder">
+
+			<?php echo $this->content; ?>
+
+		</div>
+
+		<?=$this->partial('/partials/footer')?>
+
+	</div>
+
+
+
+	<div id="contextMenu" class="dropdown clearfix context"
+		style="display: none;">
+		<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu"
+			style="display: block; position: static; margin-bottom: 5px;"></ul>
+	</div>
+
+	<div class="modal fade" id="helper" tabindex="-1" role="dialog"
+		aria-labelledby="" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="helperLabel">Modal title</h4>
+				</div>
+				<div id="helperContent" class="modal-body"></div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="seeker" tabindex="-1" role="dialog"
+		aria-labelledby="" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="seekerLabel">Modal title</h4>
+				</div>
+				<div id="seekerContent" class="modal-body"></div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade black-box modal-gallery" id="gallery" tabindex="-1" role="dialog"
+		aria-labelledby="" aria-hidden="true">
+		<div class="modal-header tab-header">
+			<button type="button" class="close" data-dismiss="modal">×</button>
+			<span class="modal-title" style="width: 534px;">Picture 35</span>
+		</div>
+		<div class="modal-body">
+			<div class="modal-image" style="width: 534px; height: 356px;">
+				<img src="/images/gallery/large/img35.jpg" width="534" height="356" class="in">
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="pull-left">
+				You can also change the images<br> by scrolling the mouse wheel!
+			</div>
+			<div class="pull-right">
+				<a class="btn btn-primary btn-xs">Next <i class="icon-arrow-right icon-white"></i></a>
+				<a class="btn btn-default btn-xs"><i class="icon-arrow-left icon-white"></i> Previous</a>
+				<a class="btn btn-success btn-xs modal-play modal-slideshow" data-slideshow="5000"><i class="icon-play icon-white"></i> Slideshow</a>
+				<a class="button black" target="_blank"><i class="icon-download"></i> Download</a>
+			</div>
+		</div>
+	</div>
+
+<script src="/js/jquery.ba-hashchange.min.js"></script>
+<script src="/js/wysihtml5-0.3.0.js"></script>
+<script src="/js/bootstrap-wysihtml5.js"></script>
+<script src="/js/simple.js"></script>
+<?php echo $this->inlineScript() ?>
+<script>
+
+(function(){
+
+	if(backgrounds != false) {
+		$('body').vegas({
+			'fade': 1000,
+			'preload': true,
+			'shuffle': true,
+			'cover': true,
+			'slides': backgrounds,
+			'transition': 'fade',
+			'overlay': ('overlay', overlay)
+		});
+	}
+	MC.EventManager.notify('mc.scroll',{'selector':'body'});
+	<?if($u && $this->rbac->getRole($u->getRole())->hasPermission('editor')):?>
+	MC.Editor.init();
+	<?endif?>
+
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+
+<?php
+$attributes = $widget->getAttributes();
+?>
+
+<div class="row-fluid w1000 h800">
+
+<form id="widgetForm" class="jqform" method="post" action="/page/widget/set/p/<?=$widget->getParent()->getId()?>?token=<?=$widget->getToken()?>" data-widget="<?=$widget->getId()?>">
+<input type="hidden" name="id" value="<?=$widget->getId()?>" />
+
+<ul class="nav nav-tabs" id="article-tab">
+<li><a href="#widget-content" data-toggle="tab"><?=$this->translate('Content'); ?></a></li>
+		<li><a href="#widget-meta" data-toggle="tab"><?=$this->translate('Settings'); ?></a></li>
+		<li><a href="#widget-geo" data-toggle="tab"><?=$this->translate('GEO-Coords'); ?></a></li>
+	</ul>
+
+	<div class="tab-content margin-bottom-10 h720">
+
+		<div class="tab-pane h720 psb" id="widget-content">
+		<?php include 'tab/widget-content.phtml'; ?>
+		</div>
+		<div class="tab-pane" id="widget-meta">
+		<?php include 'tab/widget-meta.phtml'; ?>
+		</div>
+		<div class="tab-pane" id="widget-geo">
+		<?php include 'tab/widget-geo.phtml'; ?>
+		</div>
+
+	</div>
+
+	<div class="clearfix"><!--  --></div>
+
+	<button id="btnSubmit" type="submit" class="btn btn-primary btn-xs pull-right margin-top-10 margin-right-20"><?=$this->translate('Submit')?></button>
+	<div class="clearfix"><!--  --></div>
+
+
+	</form>
+
+</div>
+
+<script>
+
+(function() {
+
+	$('#slides').on('focus', '.slideImage',function(){
+		$(this).attr('id', getID(6));
+		$('#seekerLabel').html('<?=$this->translate('Suchen Sie sich ein Bild aus')?>');
+		$('#seekerContent').load('/page/images/seeker?t=' + $(this).attr('id'));
+		showModal('#seeker');
+	});
+	$('#slides').on('click', '.btnRemSlide',function(e){
+		e.preventDefault();
+		$(this).closest('.slideGroup').remove();
+		return false;
+	});
+	$('#btnAddSlide').on('click', function(e){
+		e.preventDefault();
+		$('#slides').append(tmpl('tmpl_carouselslides', {}));
+		if(typeof $('#widgetForm .psb').data().perfectScrollbar == undefined)
+			$.fn.eventManager.notify('mc.scroll', {'selector':'#widgetForm .psb'})
+		else
+			$('#widgetForm .psb').perfectScrollbar('update');
+		return false;
+	});
+	
+
+	$form = $('#widgetForm');
+
+	$.fn.eventManager.notify('mc.jqform', {'selector':'#widgetForm'})
+	$('#btnSubmit').on("click", function(e){
+		e.preventDefault();
+		$(this).closest('form').submit();
+		return false;
+	});
+
+	$('a[data-toggle="tab"]:first').trigger('click');
+	$form.find('.whtml').wysihtml5({'font-styles':true,'html':true});
+	$.fn.eventManager.notify('mc.scroll', {'selector':'#widgetForm .psb'});
+	$('[data-toggle="popover"]').popover({html:true});
+
+})();
+
+</script>

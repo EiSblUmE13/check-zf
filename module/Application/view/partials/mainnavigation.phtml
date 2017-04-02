@@ -1,0 +1,174 @@
+
+<?php
+
+$cache = $this->ObjectHelper()->getServiceLocator()->get('cache');
+$key    = 'mainnavigation-'. md5($_SERVER['REQUEST_URI']) . '-' . $this->lang;
+$u = $this->identity();
+
+$result = $cache->getItem($key, $success);
+
+if(!$success || ($u && $this->rbac->getRole($u->getRole())->hasPermission('editor') == true)) {
+
+	ob_start();
+
+if(!$this->dm) $this->dm = $this->ObjectHelper()->getDocumentManager();
+if($parent = $this->dm->getRepository("Model\DocumentModel")->findOneBy(array('path.de'=>'/'))) {
+	$children = $parent->getChildList(array(), $this->dm);
+}
+?>
+<style>
+
+div.dropdown-menu {
+position: absolute;
+margin: 1px 0px;
+top: 100%;
+bottom: auto;
+border-top-width: 0px;
+border-bottom-width: 1px;
+border-radius: 0px 0px 4px 4px;
+left: 0px;
+right: 0px;
+padding: 15px;
+min-width: 900px;
+}
+div.flScale { width: 195px; height: 122px; overflow: hidden; }
+div.dropdown-menu li { list-style: none; }
+div.dropdown-menu li.active {  }
+div.dropdown-menu li.active a { opacity: .2 }
+div.dropdown-menu li a { padding: 5px 15px 5px 15px; display: block;  }
+div.dropdown-menu li a:hover { text-decoration: none; background-color: rgba(33,33,33, .2); }
+
+</style>
+
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="wrapper">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="<?=$this->lang?><?php echo $this->url('home') ?>">&nbsp;</a>
+		</div>
+		<div class="collapse navbar-collapse">
+
+			<ul class="nav navbar-nav navbar-left">
+				<?if($this->document):?>
+				<li><a>#<?=$this->document->getStructname($this->lang)?></a></li>
+				<?endif?>
+				<?if($u):?>
+				<li><a><?=$this->translate('Hello')?>: <?=$u->getFullName()?></a></li>
+				<?endif?>
+			</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li class="<?=$_SERVER['REQUEST_URI']=='/' || $_SERVER['REQUEST_URI']=="/{$this->lang}"?'active':false?>"><a href="/<?=$this->lang?>"><?=$parent->getStructname($this->lang)?></a></li>
+				<? foreach($children as $child):
+				$subchildlist = $child->getChildList(array(), $this->dm);
+				$liclass = $subchildlist->count()>0 ? 'dropdown ' : false;
+				?>
+				<li class="<?=$liclass?><?=$_SERVER['REQUEST_URI']==$child->getPath($this->lang) || strpos($_SERVER['REQUEST_URI'], "/{$this->lang}".$child->getPath($this->lang))!==false?'active':false?>">
+					<a href="/<?=$this->lang?><?=$child->getPath($this->lang)?>" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true"><?=$child->getStructname($this->lang)?></a>
+					<div class="dropdown-menu row">
+						<ul class="row">
+							<? $i=0;foreach($subchildlist as $subchild):
+							$bgimage = $subchild->getBgimage() ? '/assetimage_'.$subchild->getBgimage().'_195scs122.jpg' : '/images/gallery/large/img35.jpg';
+							?>
+							<li class="col-xs-6 col-sm-3 col-md-3 col-lg-3 <?=$_SERVER['REQUEST_URI']==$subchild->getPath($this->lang) || $_SERVER['REQUEST_URI']=="/{$this->lang}".$subchild->getPath($this->lang)?'active':false?>">
+								<a href="/<?=$this->lang?><?=$subchild->getPath($this->lang)?>">
+								<div class="embed-responsive embed-responsive-16by9 flScale" style="margin: -5px -15px 10px -15px;">
+								<img class="embed-responsive-item" src="<?=$bgimage?>" alt="" width="195">
+								</div>
+								<?=$subchild->getStructname($this->lang)?><br>
+								<small>Item description</small>
+								</a>
+							</li>
+							<? $i++;endforeach;?>
+						</ul>
+					</div>
+				</li>
+				<? endforeach; ?>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+
+<script>
+(function ($) {
+
+    "use strict";
+
+    // initialize
+    var $window = $(window);
+    var $document = $(document);
+    var open = false;
+    var breakpointSmallDevices = 500; // has to be 768 in production! Should match the bootstrap breakpoint value
+    var toggle = '[data-toggle=dropdown]';
+    var bsEventName = 'click.bs.dropdown.data-api';
+    var $navbar = $('.navbar-right');
+    var bsDropdown = $.fn.dropdown.Constructor;
+    var bsClickHandler = bsDropdown.prototype.toggle;
+
+    // events
+    $navbar.on('touchstart click mouseenter mouseleave', '.dropdown', dropdownHandler);
+
+    /**
+     * dropdown event handler
+     *
+     * @param evt
+     * @returns {boolean}
+     */
+    function dropdownHandler(evt) {
+        var isMobile = parseInt($window.width()) < breakpointSmallDevices;
+        console.log(evt.target);
+
+        // default behavior on mobile
+        if (isMobile) {
+            return true;
+        }
+
+        // remove focus
+        if (evt.type === 'mouseleave') {
+            $navbar.find(':focus').blur();
+        }
+
+        // trigger link
+        var $target = $(evt.target);
+        if(((open && evt.type === 'click') || evt.type === 'touchstart')) {
+        	while($target[0].nodeName != undefined && $target[0].nodeName.toLowerCase() != 'a') $target=$target.parent();
+        }
+
+        if ($target.attr('href') && ((open && evt.type === 'click') || evt.type === 'touchstart')) {
+            window.location.assign($target.attr('href'));
+
+            return true;
+        }
+
+        // prevent default behavior and update status
+        evt.preventDefault();
+        open = evt.type === 'mouseenter';
+
+        // trigger bootstrap event
+        $(this).find('[data-toggle=dropdown]').trigger(bsEventName);
+
+        // switch event handling
+        if (open) {
+            $document.off(bsEventName, toggle, bsClickHandler);
+        } else {
+            $document.on(bsEventName, toggle, bsClickHandler);
+        }
+
+        return false;
+    }
+})(window.jQuery);
+</script>
+
+<?
+	$result = ob_get_clean();
+	$cache->setItem($key, $result);
+}
+
+echo $result;
+?>

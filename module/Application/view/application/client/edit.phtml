@@ -1,0 +1,98 @@
+
+<?php
+$form = $this->form;
+$form->setAttribute('action', '/page/client/edit/' . $client->getId());
+$form->prepare();
+?>
+
+<div class="row-fluid hp100">
+
+	<div class="col-md-12 padding-0 hp100">
+
+		<?=$this->form()->openTag($form)?>
+		<input type="hidden" name="id" value="<?=$client->getId()?>">
+
+		<ul class="nav nav-tabs">
+			<li class=""><a href="#basic" data-target="#basic" data-toggle="tab"> <i class="fa fa-cogs"></i> Settings </a></li>
+			<li><a href="#sheet" data-target="#sheet" data-toggle="tab"> <i class="fa fa-book"></i> Sheet</a></li>
+			<li><a href="#style" data-target="#style" data-toggle="tab"> <i class="fa fa-css3"></i> Style</a></li>
+			<li><a href="#layout" data-target="#layout" data-toggle="tab"> <i class="fa fa-html5"></i> Template</a></li>
+		</ul>
+
+		<div class="tab-content">
+
+			<div class="tab-pane" id="basic">
+
+				<h3><?=$client->getName()?> ( <?=$client->getFullname()?> )</h3>
+				<div class="form-group">
+					Token: <?=$client->getToken()?>
+				</div>
+
+				<hr>
+
+				<?php if($client->getDescription() && strlen($client->getDescription())): ?>
+
+				<div class="form-group">
+					<?=$client->getDescription()?>
+				</div>
+
+				<hr>
+				<?php endif; ?>
+
+			</div>
+
+			<div class="tab-pane" id="sheet">
+
+				<?php include 'sheet.phtml';?>
+
+			</div>
+
+			<div class="tab-pane" id="style">
+
+				<div class="form-group">
+
+					<?=$this->formRow($form->get("stylesheet"))?>
+
+				</div>
+
+			</div>
+
+			<div class="tab-pane" id="layout">
+				<div class="form-group">
+
+					<?=$this->formRow($form->get("layout"))?>
+
+				</div>
+			</div>
+
+
+			<button class="btn btn-default margin-right-8"><?=$this->translate("Save")?></button>
+
+		</div>
+
+		<?=$this->form()->closeTag($form)?>
+	</div>
+</div>
+
+<script>
+$(document).ready(function(){
+	$('#clientForm a[data-toggle="tab"]').on('click', function (e) {
+		e.preventDefault();
+		$(this).tab('show');
+	});
+	$('#clientForm a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		if($($(e.target).data('target') + ' input')[0] != undefined)
+			$($(e.target).data('target') + ' input')[0].focus();
+	});
+	$('#clientForm a[data-toggle="tab"]:first').trigger('click');
+
+	MC.App.notify("mc.postDispatch");
+	MC.Forms.init({
+		'selector': '#clientForm',
+		'callback': function(form, data) {
+			$('#btn_'+data.client.id).html(data.client.name);
+		}
+	});
+	MC.App.notify("mc.checky", {'selector':'.checky'});
+});
+</script>

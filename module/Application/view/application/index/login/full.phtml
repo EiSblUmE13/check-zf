@@ -1,0 +1,50 @@
+
+
+<div class="row-fluid wrapper">
+	<div class="col-md-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><?php echo $this->translate('Come in and find out') ?></h3>
+			</div>
+			<div class="panel-body">
+				<form id="userShortLogin" class="padding-20" method="post" action="<?=$this->url('login', array('action'=>'login','lang'=>$this->lang))?>">
+
+
+					<p class="margin-bottom-20"><i class="fa fa-quote-left fa-2x pull-left"></i>
+					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et</p>
+
+					<p class="clearfix"><!--  --></p>
+
+					<div class="input-group margin-bottom-sm">
+					  <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+					  <input data-prompt-position="bottomLeft" class="form-control validate[required]" type="text" name="login" placeholder="<?=$this->translate('Nickname or Email')?>">
+					</div>
+					<div class="input-group margin-bottom-sm">
+					  <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+					  <input data-prompt-position="bottomLeft" class="form-control validate[required]" type="password" name="password" placeholder="<?=$this->translate('Password')?>">
+					</div>
+					<div class="form-group checkbox margin-bottom-sm">
+						<label class="padding-left-0"><input class="" type="checkbox" name="remember" value="1"> <?=$this->translate('remember')?></label>
+					</div>
+
+					<div class="form-group">
+						<button class="btn btn-default btn-md pull-right"><?=$this->translate('Login')?></button>
+					</div>
+
+					<div class="clearfix"><!--  --></div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+
+(function(){
+	$('#userShortLogin').validationEngine('attach');
+	$.fn.eventManager.notify('mc.jqform', {'selector':'#userShortLogin'})
+})();
+
+</script>

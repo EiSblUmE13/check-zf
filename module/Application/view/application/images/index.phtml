@@ -1,0 +1,129 @@
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/0.9.12/css/jquery.Jcrop.min.css" rel="stylesheet" type="text/css" />
+<link href="//cdnjs.cloudflare.com/ajax/libs/dropzone/3.12.0/css/dropzone.css" rel="stylesheet" type="text/css" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/0.9.12/js/jquery.Jcrop.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/dropzone/3.12.0/dropzone.min.js"></script>
+
+<div class="container-fluid padding-0 h990 w1000" style="overflow:hidden;">
+
+	<div class="row-fluid hp100">
+
+		<div class="col-md-4 hp100 padding-0">
+
+			<?=$this->partial('partials/editor/searchfield', array('target'=>'image'))?>
+
+			<div id="imagelistholder" class="padding-top-15 padding-bottom-15 padding-left-15 shadow-inset psb w318 hp100 ohidden" data-limit="14">
+				<div id="imagelist" class="hp100"></div>
+			</div>
+		</div>
+
+
+		<div id="document-form" class="col-md-8 padding-right-0 psb hp100">
+
+
+			<ul id="ImageBackend" class="nav nav-tabs">
+				<li class=""><a href="#meta" data-target="#meta" data-toggle="tab">Metainfo</a></li>
+				<li><a href="#imageedit" data-target="#imageedit" data-toggle="tab">Imageedit</a></li>
+				<li><a href="#imageupload" data-target="#imageupload" data-toggle="tab">Imageupload</a></li>
+			</ul>
+
+			<div class="tab-content hp100">
+
+				<div class="tab-pane" id="meta">
+				</div>
+
+				<div class="tab-pane" id="imageedit">
+				</div>
+
+				<div class="tab-pane" id="imageupload">
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="clearfix"><!--  --></div>
+
+	</div>
+
+</div>
+
+
+<script type="text/html" id="tmpl_imgthumbs">
+<% for(var i=0; i < entries.length; i++) { %>
+<div class="pull-left margin-right-5 margin-bottom-5 thumbnail relative" data-id="<%=entries[i].id%>" data-token="<%=entries[i].token%>">
+<input class="absolute" style="top:-5px;left:-5px;" type="checkbox" name="ids[]" value="<%=entries[i].id%>" />
+<img class="button lazy" data-original="/assetimage_<%=entries[i].id%>_115sc100.jpg" width="139" data-id="<%=entries[i].id%>" data-token="<%=entries[i].token%>" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></div>
+<% } %>
+</script>
+
+<script>
+
+$('#meta').append($spinner);
+$('#imagelistholder').append($spinner);
+
+var $ps, $page=1;
+function getthumbs(s) {
+	$('#imagelistholder').prepend($spinner);
+	$.get('/page/ajax/thumbs', s || {'term':'','limit':$('#imagelistholder').data('limit')}, function(response) {
+		if(s == undefined || s.page == undefined || s.page==1 || (s.clear != undefined && s.clear == true)) $('#imagelist').empty();
+		$list=[];
+		$('#loadNext').remove();
+
+		$(response).each(function(){
+			$('#imagelist').append(tmpl('tmpl_imgthumbs', {'entries':[this]}));
+		});
+
+		new Blazy({
+			'selector': '#imagelist img.lazy',
+			'src': 'data-original'
+		});
+
+		$('.spinner').remove();
+		$('#imagelist').append($('<button/>',{'class':'btn btn-default btn-xs block wp100','id':'loadNext','text':'... loading next','style':'margin-bottom:40px;'}).on('click', function(e){
+			$page=$page+1;
+			getthumbs({'page':$page});
+		}));
+		$.fn.eventManager.notify('mc.scroll', {
+			'selector': '#imagelistholder'
+		});
+		$('#imagelist img').on("click", function(e) {
+			$('#meta').empty().append($spinner).load('/page/images/meta/id/'+$(this).data('id'));
+			$('#imageedit').empty().append($spinner).load('/page/images/imageedit/id/'+$(this).data('id'));
+
+		});
+		$('.thumbnail>img:first').trigger('click');
+		$.fn.eventManager.notify('mc.postDispatch');
+	}, 'json');
+}
+
+$(document).ready(function(){
+	$('#imageupload').load('/page/images/dropzone');
+
+	$tab = $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
+		$('form').unbind();
+		$.fn.eventManager.notify('mc.postDispatch', {out:{wysihtml5:true,tooltip:true,popover:true,scrollbar:false,jqform:false}});
+	});
+	$('#ImageBackend a[href="#meta"]').tab('show');
+	$('#document-form [data-toggle="popover"]').popover({html:true});
+
+	getthumbs();
+
+	$('btnSubmit').on('click', function(e){
+		e.preventDefault();
+		form = $('#meta')
+		form = $(this);
+		$.post(form.attr('action'), form.serialize(), function(data){
+			$.fn.eventManager.notify('mc.jsonresponse', data);
+		});
+		return false;
+	});
+
+	$.fn.eventManager.notify('mc.scroll', {
+		'selector': '#imagelistholder'
+	});
+});
+
+
+</script>

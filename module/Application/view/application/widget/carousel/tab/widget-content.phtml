@@ -1,0 +1,74 @@
+
+<?php
+$attributes = $widget->getAttributes();
+$slides = $attributes['slides'];
+?>
+
+<div class="row w1000 hp100">
+	<div id="slides" class="">
+		<button id="btnAddSlide" class="btn btn-primary btn-xs pull-right margin-right-20"><i class="fa fa-plus"></i></button>
+		<div class="clearfix"><!-- --></div>
+
+		<?php foreach($slides as $slide): ?>
+		<div class="slideGroup">
+			<button id="" class="btnRemSlide btn btn-primary btn-xs pull-right"><i class="fa fa-minus"></i></button>
+			<div class="clearfix"><!-- --></div>
+			<div class="form-group">
+				<label class="block">Image:
+					<input class="form-control slideImage" type="text" name="slide[image][]" value="<?=$slide['image']?>" /></label>
+			</div>
+			<div class="form-group">
+				<label class="block"><i class="fa fa-info-circle fa-fw"
+					data-toggle="popover"
+					data-trigger="hover"
+					title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-original-title="<?=$this->bbcode($this->translate('Help'))?>"
+					data-content="<?=$this->bbcode($this->translate('imagescale_popover_content'))?>"></i> Scale Image:
+					<input class="form-control scaleImage" type="text" name="slide[scale][]" value="<?=isset($slide['scale'])?$slide['scale']:'1100scsc600'?>" /></label>
+					<div class="popover fade right in">jkhih</div>
+			</div>
+			<div class="form-group">
+				<label class="block">Label:
+					<input class="form-control" type="text" name="slide[label][]" value="<?=$slide['label']?>" /></label>
+			</div>
+			<div class="form-group">
+				<label class="block">Message:
+					<textarea class="form-control h200 whtml" name="slide[message][]"><?=$slide['message']?></textarea></label>
+			</div>
+		</div>
+	<?php endforeach; ?>
+	</div>
+</div>
+
+
+
+
+<script type="text/html" id="tmpl_carouselslides">
+<div class="slideGroup">
+<button id="" class="btnRemSlide btn btn-primary btn-xs pull-right"><i class="fa fa-minus"></i></button>
+			<div class="clearfix"><!-- --></div>
+	<div class="form-group">
+		<label class="block">Image:
+			<input class="form-control slideImage" type="text" name="slide[image][]" value="" /></label>
+	</div>
+	<div class="form-group">
+		<label class="block"><i class="fa fa-info-circle fa-fw"
+			data-toggle="popover"
+			data-trigger="hover"
+			title="<?=$this->bbcode($this->translate('Help'))?>"
+			data-original-title="<?=$this->bbcode($this->translate('Help'))?>"
+			data-content="<?=$this->bbcode($this->translate('imagescale_popover_content'))?>"></i> Scale Image:
+			<input class="form-control scaleImage" type="text" name="slide[scale][]" value="<?=isset($slide['scale'])?$slide['scale']:'1100scsc600'?>" /></label>
+			<div class="popover fade right in">jkhih</div>
+	</div>
+	<div class="form-group">
+		<label class="block">Label:
+			<input class="form-control" type="text" name="slide[label][]" value="" /></label>
+	</div>
+	<div class="form-group">
+		<label class="block">Message:
+			<input class="form-control" type="text" name="slide[message][]" value="" /></label>
+	</div>
+</div>
+</script>
+

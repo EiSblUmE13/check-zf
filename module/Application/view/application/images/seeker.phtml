@@ -1,0 +1,64 @@
+
+<?php
+$qb = $this->dm->createQueryBuilder("Model\Image");
+$qb->distinct('folder');
+$folder = $qb->getQuery()->execute();
+?>
+<form id="seekerForm">
+	<div class="row-fluid">
+
+	<div id="seekerField" class="input-group">
+		<span class="input-group-btn">
+			<button class="btn btn-default" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-folder-open-o"></i> <span class="caret"></span></button>
+			<button class="btn btn-default go" type="submit">Go!</button>
+
+			<ul class="dropdown-menu folderselect" role="menu">
+				<li disabled><a href="#">Find Images by Folder</a></li>
+				<li class="divider"></li>
+				<?php foreach($folder as $entry): ?>
+				<li><span> <input type="checkbox" name="folder[]" value="<?=$entry?>"> <?=$entry?> </span></li>
+				<?php endforeach; ?>
+				<li class="divider"></li>
+				<li><a href="#">...</a></li>
+			</ul>
+
+
+		</span>
+		<input type="text" class="form-control" name="q" placeholder="Search for..." autocomplete="off">
+	</div><!-- /input-group -->
+
+	</div>
+</form>
+
+<p><!--  --></p>
+
+<div id="resultList"></div>
+
+
+<script>
+var target='#<?=$this->t?>';
+(function(){
+	$('#seekerForm').on('submit', function(e) {
+		e.preventDefault();
+		$('#resultList').empty().append($spinner);
+		$.get('/page/ajax/isearch', $(this).serialize(), function(data){
+
+			$('#resultList').empty();
+			$list=[];
+			for(var i in data) {
+				$('#resultList').append($('<div />', {'class':'thumbnail pull-left margin-right-15'}).data('id',data[i].id).append(
+						$('<img />', {'data-original':'/assetimage_'+data[i].id+'_100scsc100.jpg','class':'lazy','width':100,'height':100,'src':'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='})).on('click', function(e){
+							$(target).val($(this).data('id'));
+							$('#imgSeeker').modal('hide');
+						}));
+			}
+			new Blazy({'selector':'img.lazy','src':'data-original'});
+			$('#resultList').append($('<div />',{'class':'clearfix','text':''}));
+		}, 'json');
+		return false;
+	});
+	$('btn.go').on('click', function(e) {});
+
+})();
+
+</script>

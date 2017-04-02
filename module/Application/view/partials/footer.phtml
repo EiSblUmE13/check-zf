@@ -1,0 +1,34 @@
+<?php
+$client = $this->dm->getRepository("Model\ClientModel")->findOneBy(array(
+	'shortname' => new \MongoRegex("/hhog/i")
+));
+
+?>
+<div class="footer hidden-sm" style="padding: 20px 0;">
+
+	<div class="row-fluid wrapper">
+
+		<div class="col-md-3">
+            <ul class="unstyled vcard">
+                <li>
+                    <div class=""><?=$client->getFirm()?></div>
+                    <div class=""><?=$client->getZipcode()?> <?=$client->getCity()?>, <?=$client->getStreetnr()?></div>
+                    <p>
+                    Headquarters
+                    </p>
+                    <div class="clearfix"><?=$this->translate('Phone')?>: <a class="pull-right" href="tel:<?=$client->getPhone()?>"><?=$client->getPhone()?></a></div>
+                    <div class="clearfix"><?=$this->translate('Fax')?>: <a class="pull-right" href="tel:<?=$client->getFax()?>"><?=$client->getFax()?></a></div>
+                    <div class="clearfix"><?=$this->translate('E-Mail')?>:</div>
+                </li>
+            </ul>
+		</div>
+		<div class="col-md-3">info blog</div>
+
+		<div class="col-md-3">Higlight Package</div>
+
+		<div class="col-md-3">Twitter / Facebook – Stream</div>
+
+	</div>
+
+</div
+<!-- " vim: set ts=4 ft:vim: -->

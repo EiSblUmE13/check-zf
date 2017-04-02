@@ -1,0 +1,55 @@
+
+
+<?php
+$attributes = $widget->getAttributes();
+?>
+
+<div class="row-fluid w1000 hp80">
+
+<form id="widgetForm" class="jqform" method="post" action="/page/widget/set/p/<?=$widget->getParent()->getId()?>?token=<?=$widget->getToken()?>" data-widget="<?=$widget->getId()?>">
+<input type="hidden" name="id" value="<?=$widget->getId()?>" />
+
+
+	<div class="from-group">
+		<label>Sourcefile des Video:
+		<input class="form-control" type="text" name="src" value="<?=isset($attributes['src'])?$attributes['src']:false?>" placeholder="" /></label>
+	</div>
+
+	<div class="from-group">
+		<label>Format der Einbindung:</label>
+		<label><input class="form-control" type="radio" name="form" value="4by3"> 4:3</label>
+		<label><input class="form-control" type="radio" name="form" value="16by9"> 16:9</label>
+	</div>
+
+
+	<div class="clearfix"><!--  --></div>
+
+	<button class="btn btn-primary pull-right margin-right-8" data-type="submit"><?=$this->translate('Save'); ?></button>
+
+
+</form>
+
+
+<script>
+
+(function(){
+	$form = $('#widgetForm');
+
+	$form.on('submit', function(e){
+		e.preventDefault();
+		form = $(this).closest('form');
+		$.post(form.attr('action'), form.serialize(), function(data){
+			$.fn.eventManager.notify('mc.jsonresponse', data);
+		});
+		return false;
+	});
+	$('#submitBtn').on("click", function(e){
+		e.preventDefault();
+		$.post($(this).attr('action'), $(this).serialize(), function(data){
+			$.fn.eventManager.notify('mc.jsonresponse', data);
+		});
+		return false;
+	});
+})();
+
+</script>

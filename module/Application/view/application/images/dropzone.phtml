@@ -1,0 +1,76 @@
+
+<?php
+use Model\Image;
+
+$folders = $dm->createQueryBuilder('Model\Image')
+				->distinct('folder')
+				->getQuery()
+				->execute();
+?>
+
+<div class="row-fluid">
+	<div class="input-group">
+		<span class="input-group-btn">
+			<button class="btn btn-default" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-folder-open-o"></i> <span class="caret"></span></button>
+			<ul id="folder-list" class="dropdown-menu" role="menu">
+				<?php foreach($folders as $folder): ?>
+				<li><a href="#"><i class="fa fa-folder-open-o"></i> <?=$folder?></a></li>
+				<?php endforeach; ?>
+			</ul>
+
+
+		</span>
+		<input id="folder" type="text" class="form-control" name="folder" value="<?=isset($image)?$image->getFolder():false;?>" placeholder="Folder ...">
+	</div><!-- /input-group -->
+</div>
+
+<br>
+
+<div class="row-fluid">
+
+	<div id="dropzone" class="dropzone"></div>
+</div>
+
+<br>
+
+<script>
+
+var $dropzone;
+(function(){
+	$dropzone = new Dropzone("div#dropzone", {
+		'url':'/page/images/upload',
+		paramName: "file", // The name that will be used to transfer the file
+		maxFilesize: 40, // MB
+		acceptedFiles: 'image/jpeg,image/jpg,image/png',
+		accept: function(file, done) {
+			done();
+		},
+		sending: function(file, xhr, fd){
+
+			$folder = $('#folder').val() ? $('#folder').val() : 'Default';
+
+			fd.append('folder', $folder);
+		}
+	});
+	$dropzone.on("complete", function(file) {
+		var response = jQuery.parseJSON(file.xhr.response);
+		$('#dropzone').append($('<input>', {'type':'hidden','name':'images[]'}).attr('value', response.id));
+		file.previewElement.setAttribute('data-id', response.id);
+		file.previewElement.setAttribute('data-toggle', 'addedFile');
+
+		$('[data-toggle="addedFile"]').each(function(){
+			$(this).unbind("click");
+			$(this).on("click", function(){
+				$.get('/page/images/meta?lang=<?=$this->lang?>', $(this).data(), function(data){
+					$.fn.eventManager.notify("mc.jsonresponse", data);
+				}, 'json');
+			});
+		});
+	});
+	$('#folder-list a').on('click', function(e) {
+		e.preventDefault();
+		$('#folder').val(strip_tags($(this).html()).replace(/^\s+|\s+$/,''));
+	});
+})();
+
+</script>

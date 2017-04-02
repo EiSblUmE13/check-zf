@@ -1,0 +1,51 @@
+
+<?php
+if($target == 'image') {
+	$this->dm = $this->ObjectHelper()->getDocumentManager();
+	$folders = $this->dm->createQueryBuilder("Model\Image")->distinct('folder')->getQuery()->execute();
+}
+?>
+
+	<div id="editorSearchField" class="input-group">
+		<span class="input-group-btn">
+			<button class="btn btn-default" type="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cogs"></i> <span class="caret"></span></button>
+			<button class="btn btn-default" type="submit">Go!</button>
+
+			<ul class="dropdown-menu" role="menu">
+				<?php if($target != 'image'): ?>
+				<li><a href="/page/<?=$target?>/set?create=true" data-toggle="jl" data-target="#<?=$target?>-form"><?=$this->translate('create toplevel '.$target)?></a></li>
+				<?php else: ?>
+				<li><a href="javascript:;" onclick="getthumbs()"><i class="fa fa-refresh"></i> Reload Thumbnails</a></li>
+				<li class="divider"></li>
+				<li><a href="/page/images/remove" data-toggle="jl" data-target="#imagelistholder" data-value-selector="#imagelistholder input:checked"><i class="fa fa-minus-circle"></i> Remove</a></li>
+				<li class="divider"></li>
+				<?php foreach($folders as $folder): ?>
+				<li><a href="javascript:;" onclick="getthumbs({'folder':'<?=$folder?>','limit':100,'clear':true})"><i class="fa fa-folder-o"></i> <?=$folder?></a></li>
+				<?php endforeach; ?>
+				<?php endif; ?>
+				<li class="divider"></li>
+				<li><a href="#">...</a></li>
+			</ul>
+
+
+		</span>
+		<input type="text" class="form-control" name="q" placeholder="Search for..." autocomplete="off">
+	</div><!-- /input-group -->
+
+<script>
+(function(){
+	$('[data-toggle="jl"]').on('click', function(e){
+		e.preventDefault();
+		var params='';
+		if($(this).attr('data-value-selector'))
+			params= '?' + $('input:checked').serialize();
+		if($(this).data('target')) $($(this).data('target')).empty().append($spinner);
+		$.get($(this).attr('href')+ params, {}, function(data){
+			if($(this).data('target')) $($(this).data('target')).empty().append(data);
+		}, 'json');
+	});
+
+	MC.EventManager.notify('mc.searchfield', {'type':'<?=$target?>','target':'#editorSearchField'});
+})()
+
+</script>

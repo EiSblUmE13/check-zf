@@ -1,0 +1,160 @@
+
+<?php
+$expire = !empty($image->getAttributes()->getExpire()) ? $image->getAttributes()->getExpire()->format("Y-m-d") : false;
+$users = $this->dm->createQueryBuilder("Model\UserModel")->getQuery()->execute();
+$folders = $this->dm->createQueryBuilder("Model\Image")->distinct('folder')->getQuery()->execute();
+
+?>
+
+
+<form id="imgAttributeForm" class="forms jqform" method="post" action="/page/images/attributes/<?=$image->getId()?>">
+<input id="id" type="hidden" name="id" value="<?=$image->getId()?>" />
+<input id="token" type="hidden" name="token" value="<?=$image->getToken()?>" />
+
+    <p class="inverse margin-top-15 margin-bottom-20">Token: <?=$image->getToken()?> ID: <?=$image->getId()?></p>
+
+	<div class="btn-group margin-bottom-20" data-toggle="buttons">
+		<?php foreach($config['locales']['list'] as $_lang => $entry):
+		$active = $_lang == $lang ? ' active' : false;
+		?>
+		<label class="btn btn-default<?=$active?>">
+			<input class="check_lang" type="radio" name="check_lang" value="<?=$_lang?>" <?=$active?'checked':false?>> <?=strtoupper($_lang)?></label>
+		<?php endforeach; ?>
+	</div>
+
+	<p><!--  --></p>
+
+	<div class="form-group">
+		<label class="block" for=""> <?=$this->translate('Title')?>
+			<input class="form-control" type="text" name="attributes[title]" value="<?=$image->getAttributes()->getTitle($this->lang)?$image->getAttributes()->getTitle($this->lang):''?>" /></label>
+	</div>
+
+	<div class="form-group">
+		<label class="block" for=""> <?=$this->translate('Alt')?>
+			<input class="form-control" type="text" name="attributes[alt]" value="<?=$image->getAttributes()->getAlt($this->lang)?$image->getAttributes()->getAlt($this->lang):''?>" /></label>
+	</div>
+
+	<div class="form-group">
+		<label class="block" for=""> <?=$this->translate('Copyright')?>
+			<input class="form-control" type="text" name="attributes[copyright]" value="<?=$image->getAttributes()->getCopyright()?$image->getAttributes()->getCopyright():''?>" /></label>
+	</div>
+
+	<div class="form-group">
+		<label class="block" for=""> <?=$this->translate('Tags')?>
+			<input class="form-control" type="text" name="attributes[tag]" value="<?=$image->getAttributes()->getTag()?implode(',', $image->getAttributes()->getTag()):''?>" /></label>
+	</div>
+
+	<div class="form-group">
+		<label class="block" for=""> <?=$this->translate('Copyright Expire')?>:
+			<input class="form-control" type="date" name="attributes[expire]" value="<?=$image->getAttributes()->getExpire()?$image->getAttributes()->getExpire()->format('d.m.Y'):''?>" /></label>
+	</div>
+
+	<div class="form-group">
+		<label class="checkbox">
+			<input id="isbackground" class="" type="checkbox" name="isbackground" value="1"<?=$image->getIsbackground()==1?' checked="checked"':false?> data-token="<?=$image->getToken()?>" />
+			<?=$this->translate('Image is perfect for Background-Slider')?></label>
+	</div>
+
+	<div class="form-group">
+		<label class="block"><?=$this->translate('Folder')?>:
+		<select class="form-control" name="folder">
+			<?php foreach($folders as $folder):
+			$selected = $image->getFolder() == $folder ? ' selected="selected"' : false;
+			?>
+			<option value="<?=$folder?>"<?=$selected?>><?=$folder?></option>
+			<?php endforeach; ?>
+		</select>
+		</label>
+	</div>
+
+
+	<div class="form-group">
+		<label class="block" for=""> Owner:
+			<select class="form-control" name="owner">
+				<option value="-1">---</option>
+				<?php foreach($users as $owner):
+				$selected = $image->getOwner() && $owner->getId() == $image->getOwner()->getId() ? ' selected="selected"' : false;
+				?>
+				<option value="<?=$owner->getToken()?>"<?=$selected?>><?=$owner->getFullName()?></option>
+				<?php endforeach; ?>
+			</select>
+	</div>
+	<hr>
+
+	<div class="form-group">
+		<button id="submitBtn" class="btn btn-primary pull-right"><?=$this->translate("Save")?></button>
+		<a href="/page/images/remove/id/<?=$image->getId()?>" class="btn btn-primary pull-right jsonload margin-right-10 color-white"><?=$this->translate("Remove")?></a>
+
+		<br class="clearfix">
+	</div>
+
+
+</form>
+
+<script>
+LangSwitch = (function(){
+
+	defaults = {
+		'uri': '/page/images/meta',
+		'target': '#meta'
+	};
+
+	function init(options) {
+		defaults = $.extend(defaults, options || {});
+		if(defaults.handler != undefined)
+			defaults.uri = defaults.handler.attr('href') + '?token=' + defaults.handler.data('token') + '&lang=';
+		prepare();
+	}
+
+	function prepare() {
+
+		if(defaults.handler == undefined) {
+			$(defaults.target).append($('<p/>', {
+				'id': 'handler',
+				'class': 'hidden'
+			}));
+			$('#handler').attr('data-token', $('#token').val());
+			$('#handler').attr('data-target', defaults.target);
+			$('#handler').attr('data-id', $('#id').val());
+			defaults.handler = $('#handler');
+		}
+
+		$('input.check_lang').on("change", function(e) {
+			defaults.uri += '/id/' + $('#id').val();
+			defaults.uri += '?lang=' + $(this).val();
+
+			LangSwitch.loadForm(defaults.uri, defaults.handler, $(this).val());
+		});
+	}
+
+	function loadForm(_uri, o, lang) {
+		$(o.data('target')).empty().append($spinner);
+		$.get(_uri, {}, function(data){
+			$(o.data('target')).empty().append(data);
+			$('#imgAttributeForm').attr('action', $('#imgAttributeForm').attr('action') + '?lang='+lang)
+		});
+	}
+
+	return {
+		'init': init,
+		'loadForm': loadForm
+	}
+})();
+LangSwitch.init();
+
+(function(){
+	$.fn.eventManager.notify('mc.jqform', {'selector':'#imgAttributeForm'});
+	$('#submitBtn').on("click", function(e){
+		e.preventDefault();
+		$(this).closest('form').submit()
+		return false;
+	});
+
+	$('input#isbackground').on('change', function(e) {
+		$.get('/page/images/isbackground/token/'+$(this).data('token'), {}, function(data) {
+		},'json');
+	});
+	$.fn.eventManager.notify('mc.jsonload');
+})();
+
+</script>

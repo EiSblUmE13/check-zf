@@ -1,0 +1,53 @@
+
+<div class="row-fluid wrapper">
+
+	<div class="row">
+		<div class="col-md-3">&nbsp;</div>
+		<div class="col-md-9 text-left">
+			<h4><?=$this->translate('Login')?></h4>
+		</div>
+	</div>
+
+	<form id="shortLoginForm" class="form-horizontal jqform" method="post" action="/login" >
+		<div class="form-group">
+			<label for="inputEmail3" class="col-md-3 control-label">Email</label>
+			<div class="col-md-9">
+				<input type="text" class="form-control" id="inputEmail3" name="login" placeholder="<?=$this->translate('Email or Nickname')?>">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputPassword3" class="col-md-3 control-label">Password</label>
+			<div class="col-md-9">
+				<input type="password" class="form-control" id="inputPassword3" name="password" placeholder="<?=$this->translate('Password')?>">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-offset-3 col-md-9 text-right">
+				<div class="checkbox">
+					<label><input type="checkbox" name="remember"> <?=$this->translate('remember login')?></label>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-offset-3 col-md-9 text-right">
+				<button type="submit" class="btn btn-default">Sign in</button>
+			</div>
+		</div>
+	</form>
+
+	<div class="clearfix"><!--  --></div>
+
+</div>
+
+<script>
+
+(function(){
+
+	$.fn.eventManager.notify('mc.jqform', {'selector':'#shortLoginForm'});
+	if(window.location.hash == '#login') {
+		$('li.login').removeClass('open').toggleClass('open');
+	}
+
+})();
+
+</script>

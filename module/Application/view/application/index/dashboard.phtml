@@ -1,0 +1,32 @@
+
+<div class="row-fluid">
+
+    <div class="col-md-12">
+
+        <div class="jumbotron">
+            <h1><?php echo sprintf($this->translate('Welcome to %smeta:cope%s v2'), '<span class="zf-green">', '</span>') ?> <i class="fa fa-spinner"></i></h1>
+            <p><?php echo sprintf($this->translate('meta:cope ( metadata compose once publish everywhere )'),'','');?></p>
+            <hr>
+            <p class="flowing-text">
+			Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<?php include getcwd().'/elements/helper/subinfoline.phtml';?>
+
+
+<script>
+
+$(document).ready(function(){
+
+	intvalIntro = window.setInterval(function(){
+		$('.jumbotron .fa-spinner').toggleClass('fa-spin');
+	}, 10000);
+
+});
+
+</script>
+

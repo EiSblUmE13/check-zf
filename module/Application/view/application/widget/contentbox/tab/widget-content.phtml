@@ -1,0 +1,12 @@
+
+<?php
+
+$body = isset($attributes['body'][$this->lang])
+		? $attributes['body'][$this->lang]
+		: null;
+?>
+
+<div class="form-group">
+	<label class="block"><?=$this->translate('Body')?>:
+		<textarea class="form-control h300 whtml" type="text" name="body" placeholder=""><?=$body?></textarea></label>
+</div>

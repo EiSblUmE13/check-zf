@@ -1,0 +1,62 @@
+
+<?php
+$attributes = $widget->getAttributes();
+$datestart = $widget->getDatestart();
+$datestop = $widget->getDatestop();
+$datestart = $datestart instanceof \DateTime ? $datestart->format('d.m.Y') : null;
+$datestop = $datestop instanceof \DateTime ? $datestop->format('d.m.Y') : null;
+
+$imagecount = 0;
+?>
+
+<div class="row-fluid w1000 hp80">
+
+	<form id="widgetForm" class="jqform" method="post" action="/page/widget/set/<?=$widget->getParent()->getId()?>?token=<?=$widget->getToken()?>" data-widget="<?=$widget->getId()?>">
+	<input type="hidden" name="id" value="<?=$widget->getId()?>" />
+
+	<ul class="nav nav-tabs" id="article-tab">
+		<li><a href="#widget-content" data-toggle="tab"><?=$this->translate('Content'); ?></a></li>
+		<li><a href="#widget-meta" data-toggle="tab"><?=$this->translate('Settings'); ?></a></li>
+		<li><a href="#widget-geo" data-toggle="tab"><?=$this->translate('GEO-Coords'); ?></a></li>
+	</ul>
+
+	<div class="tab-content margin-bottom-10 hp80">
+
+		<div class="tab-pane" id="widget-content">
+		<?php include 'tab/widget-content.phtml'; ?>
+		</div>
+		<div class="tab-pane" id="widget-meta">
+		<?php include 'tab/widget-meta.phtml'; ?>
+		</div>
+		<div class="tab-pane" id="widget-geo">
+		<?php include 'tab/widget-geo.phtml'; ?>
+		</div>
+
+	</div>
+
+	<div class="clearfix"><!--  --></div>
+
+	<button class="btn btn-primary pull-right margin-right-8" data-type="submit"><?=$this->translate('Save'); ?></button>
+
+
+	</form>
+
+</div>
+
+<script>
+
+(function(){
+
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function() {
+		$('form').unbind();
+		$.fn.eventManager.notify('mc.postDispatch', {out:{wysihtml5:true,tooltip:true,popover:true,scrollbar:true}});
+	});
+	$('a[data-toggle="tab"]:first').trigger('click');
+	$('.whtml').wysihtml5({
+		'font-styles': false,
+		'html': true
+	});
+
+})();
+
+</script>
